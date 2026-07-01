@@ -37,9 +37,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR
 .f-btn:hover { border-color: #adb5bd; }
 .f-btn.on { background: #1a1a2e; color: white; border-color: #1a1a2e; }
 
-.tbl-wrap { overflow-x: auto; }
+.tbl-wrap { overflow: auto; max-height: 620px; border: 1px solid #e9ecef; border-radius: 8px; }
 table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-thead th { background: #f8f9fa; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: #6c757d; padding: 10px 10px; text-align: left; border-bottom: 2px solid #e9ecef; white-space: nowrap; }
+thead th { position: sticky; top: 0; background: #f8f9fa; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: #6c757d; padding: 10px 10px; text-align: left; border-bottom: 2px solid #e9ecef; white-space: nowrap; z-index: 1; }
 tbody td { padding: 9px 10px; border-bottom: 1px solid #f0f2f5; vertical-align: top; }
 tbody tr:hover { background: #f8f9fb; }
 .note { font-size: 12px; color: #888; margin-bottom: 12px; }
