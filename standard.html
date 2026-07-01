@@ -131,7 +131,7 @@ tbody td.center, thead th.center { text-align: center; }
   <div class="design-note" style="border-left-color:#4361ee">
     <strong>테스트유형 분류 기준</strong>
     기획서에 명시된 정상 흐름 → Happy Path / 기획서에 명시된 오류 처리 → Unhappy Path / 기획서에 아예 없는 예외(빈 상태·권한·네트워크·경계값·AI 폴백·명세 미정의) → Edge Case(출처는 원칙적으로 AI추가).
-    다만 TC-004·TC-017처럼 명세에 문장으로 존재하는 경계값은 Edge Case이면서도 출처=기획서기반인 예외가 있어, 테스트유형만으로 출처를 100% 예측할 수는 없다.
+    다만 TC-004·TC-017처럼 명세에 문장으로 존재하는 경계값은 Edge Case이면서도 출처=기획서기반인 예외가 있고, 반대로 TC-020·045·061처럼 Unhappy Path이면서도 명세에 없는 암묵적 표준 실패처리라 출처=AI추가로 재분류된 예외도 있어, 테스트유형만으로 출처를 100% 예측할 수는 없다.
   </div>
   <div class="design-note" style="border-left-color:#2d6a4f">
     <strong>/validate가 하는 일 (Standard에서 추가한 5단계)</strong>
@@ -151,7 +151,7 @@ tbody td.center, thead th.center { text-align: center; }
       <tr><td>4. 커뮤니티 피드</td><td class="center">7</td><td class="center">3</td><td class="center">4</td><td class="center">—</td><td class="center">14</td><td class="center cov-full">완비 ✔</td></tr>
       <tr><td>5. 알림</td><td class="center">5</td><td class="center">2</td><td class="center">4</td><td class="center">—</td><td class="center">11</td><td class="center cov-full">완비 ✔</td></tr>
       <tr><td>6. 계정 및 인증</td><td class="center">7</td><td class="center">6</td><td class="center">4</td><td class="center"><span class="badge p-p0">P0 (8건)</span></td><td class="center">17</td><td class="center cov-full">완비 ✔</td></tr>
-      <tr style="font-weight:700;background:#fafafa"><td>합계</td><td class="center">32</td><td class="center">20</td><td class="center">30</td><td class="center">15건 (3섹션)</td><td class="center">82</td><td class="center">6/6 섹션</td></tr>
+      <tr style="font-weight:700;background:#fafafa"><td>합계</td><td class="center">32</td><td class="center">19</td><td class="center">31</td><td class="center">15건 (3섹션)</td><td class="center">82</td><td class="center">6/6 섹션</td></tr>
     </tbody>
   </table>
   <p style="font-size:12px;color:#888;margin-top:10px">✔ 6개 섹션 전부 Happy+Unhappy+Edge를 보유. "P0 포함" 열은 섹션 단위 릴리즈 게이트 판단에 사용 — 3개 섹션(프로필 등록·캐릭터 생성·계정 및 인증)은 출시 전 반드시 재검증이 필요하다는 신호를 준다.</p>
@@ -187,10 +187,10 @@ tbody td.center, thead th.center { text-align: center; }
       <div class="kpi-row">
         <div class="kpi kpi-purple"><div class="kpi-n" style="color:#6c5ce7">82</div><div class="kpi-l">총 케이스</div></div>
         <div class="kpi kpi-red"><div class="kpi-n" style="color:#e63946">15</div><div class="kpi-l">P0</div></div>
-        <div class="kpi kpi-orange"><div class="kpi-n" style="color:#e76f51">28</div><div class="kpi-l">AI추가 엣지</div></div>
+        <div class="kpi kpi-orange"><div class="kpi-n" style="color:#e76f51">29</div><div class="kpi-l">AI추가 엣지</div></div>
         <div class="kpi kpi-green"><div class="kpi-n" style="color:#2d6a4f">6/6</div><div class="kpi-l">섹션 커버</div></div>
       </div>
-      <p style="font-size:13px;color:#444">엣지 6유형 커버: 빈 상태 ✔(4) · 권한 ✔(3) · 네트워크 ✔(5) · 경계값 ✔(10) · AI 폴백 ✔(1) · 명세 미정의 ✔(5). 명세 미정의 5건은 PM 확정 전까지 "[기획 미정의] 최소 안전 가드레일" 기대결과로 배포. P0 미해결 0건 시 출시 가능 — Challenge의 릴리즈 게이트로 연결.</p>
+      <p style="font-size:13px;color:#444">엣지 6유형 커버: 빈 상태 ✔(4) · 권한 ✔(3) · 네트워크 ✔(5) · 경계값 ✔(9) · AI 폴백 ✔(1) · 명세 미정의 ✔(7, PM 확정 필요 6건 포함). 별도로 Unhappy Path 3건(TC-020·045·061)은 명세에 없는 표준 실패처리라 엣지케이스로 승격하지 않고 출처만 AI추가로 재분류 — 총 AI추가 32건. P0 미해결 0건 시 출시 가능 — Challenge의 릴리즈 게이트로 연결.</p>
     </div>
   </div>
 </div>
