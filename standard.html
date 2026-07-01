@@ -27,12 +27,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR
 .pipe-step.input .cmd { color: #e76f51; }
 .pipe-step.output { background: #e8f5e9; border-color: #2d6a4f; }
 .pipe-step.output .cmd { color: #2d6a4f; }
+.pipe-step.wrap { background: #f3f0ff; border-color: #6c5ce7; }
+.pipe-step.wrap .cmd { color: #6c5ce7; }
 
 .usage-box { background: #1e1e2e; border-radius: 8px; padding: 16px 20px; font-family: monospace; font-size: 13px; color: #a6e3a1; margin-bottom: 16px; line-height: 1.8; }
 .usage-box .comment { color: #6c7086; }
 .usage-box .cmd { color: #89b4fa; }
 
-.design-note { background: #f8f9fa; border-left: 3px solid #f4a261; border-radius: 0 8px 8px 0; padding: 14px 18px; font-size: 13px; color: #444; }
+.design-note { background: #f8f9fa; border-left: 3px solid #f4a261; border-radius: 0 8px 8px 0; padding: 14px 18px; font-size: 13px; color: #444; margin-bottom: 12px; }
 .design-note strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #888; margin-bottom: 4px; }
 
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -60,6 +62,9 @@ tbody td.center, thead th.center { text-align: center; }
 .kpi-orange { background: #fff6ef; }
 .kpi-green { background: #f0faf5; }
 
+.drift-box { background: #fff8f0; border: 1px solid #ffe3c0; border-radius: 8px; padding: 14px 18px; font-size: 12.5px; color: #444; margin-top: 10px; }
+.drift-box strong { color: #b5560a; }
+
 @media(max-width:700px) {
   .pipeline { flex-direction: column; }
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
@@ -81,7 +86,7 @@ tbody td.center, thead th.center { text-align: center; }
   <h1>Petbbi QA 체크리스트 + 재현 파이프라인</h1>
   <div class="header-meta">
     <span>📄 입력: 임의의 기획서 .md</span>
-    <span>🔁 새 기획서 넣으면 자동 재생성</span>
+    <span>🔁 /pipeline 한 번으로 5단계 자동 재현</span>
     <span>📐 섹션별 커버리지 리포트</span>
     <span>✍️ [이름] · 2026-07-01</span>
   </div>
@@ -89,59 +94,90 @@ tbody td.center, thead th.center { text-align: center; }
 
 <!-- Pipeline -->
 <div class="section">
-  <div class="section-title">⚙️ 파이프라인 구성 — 새 기획서를 넣으면 자동 재현</div>
+  <div class="section-title">⚙️ 파이프라인 구성 — /pipeline 하나로 5단계 자동 재현</div>
   <div class="pipeline">
-    <div class="pipe-step input"><div class="cmd">새 spec.md</div><div class="desc">data/ 폴더에 교체</div></div>
+    <div class="pipe-step input"><div class="cmd">새 spec.md</div><div class="desc">data/ 폴더에 배치</div></div>
     <div class="pipe-arrow">→</div>
-    <div class="pipe-step"><div class="cmd">/analyze</div><div class="desc">H2·H3·누락 진단</div></div>
+    <div class="pipe-step wrap"><div class="cmd">/pipeline [경로]</div><div class="desc">5단계 통합 실행</div></div>
     <div class="pipe-arrow">→</div>
-    <div class="pipe-step"><div class="cmd">/insight</div><div class="desc">유형·우선순위 설계</div></div>
+    <div class="pipe-step output"><div class="cmd">CSV + 리포트</div><div class="desc">노션 제출</div></div>
+  </div>
+  <div class="pipeline" style="margin-top:-6px">
+    <div class="pipe-step"><div class="cmd">/analyze</div><div class="desc">H2·H3·수치한도 추출</div></div>
     <div class="pipe-arrow">→</div>
-    <div class="pipe-step"><div class="cmd">/generate</div><div class="desc">CSV 자동 생성</div></div>
+    <div class="pipe-step"><div class="cmd">/insight</div><div class="desc">유형·P0~P2 기준 확정</div></div>
     <div class="pipe-arrow">→</div>
-    <div class="pipe-step"><div class="cmd">/review</div><div class="desc">커버리지 점검</div></div>
+    <div class="pipe-step"><div class="cmd">/generate</div><div class="desc">9컬럼 CSV 생성</div></div>
     <div class="pipe-arrow">→</div>
-    <div class="pipe-step output"><div class="cmd">CSV + 링크</div><div class="desc">노션 제출</div></div>
+    <div class="pipe-step"><div class="cmd">/review</div><div class="desc">채점기준 자가점검</div></div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step"><div class="cmd">/validate</div><div class="desc">데이터 정합성 재검산</div></div>
   </div>
 
   <div class="usage-box">
     <span class="comment"># 새 기획서가 들어올 때마다 (Claude Code 터미널)</span><br>
-    <span class="comment"># 1. 새 기획서 .md 를 data/ 폴더에 교체</span><br>
-    <span class="cmd">/analyze</span> <span class="comment">  # 기능 섹션·세부항목 추출, 빠진 엣지 후보 진단</span><br>
-    <span class="cmd">/insight</span> <span class="comment">  # Happy/Unhappy/Edge + P0/P1/P2 기준 적용</span><br>
-    <span class="cmd">/generate</span> <span class="comment"> # qa-checklist.csv 자동 생성 (9컬럼 고정)</span><br>
-    <span class="cmd">/review</span> <span class="comment">   # 섹션 커버리지·P0 포함·엣지 3유형 점검 후 제출</span>
+    <span class="comment"># 1. 새 기획서 .md 를 data/ 폴더에 배치</span><br>
+    <span class="cmd">/pipeline data/새파일.md</span> <span class="comment"> # analyze→insight→generate→review→validate 한 번에 실행</span><br>
+    <span class="comment"># baseline(product_spec_petbbi_v1.md)이 아니면 output/qa-checklist-&lt;식별자&gt;.csv 로 자동 분리 생성</span><br>
+    <span class="comment"># 단계별로 점검하고 싶을 때만 /analyze → /insight → /generate → /review → /validate 순서로 개별 실행</span>
   </div>
 
   <div class="design-note">
     <strong>체크리스트 양식 설계 근거 (본인 설계)</strong>
     QA 담당자는 "어떤 케이스를 먼저 실행할지"를, PM은 "출시를 막을 P0가 무엇인지"를 본다.
     그래서 컬럼을 <b>테스트유형·우선순위·출처</b> 3축으로 고정해 두 관점을 한 표에서 필터링할 수 있게 했다.
-    특히 <b>출처(기획서기반/AI추가)</b> 컬럼은 "기획서 자체의 빈틈"을 가시화해 다음 기획서 작성 품질로 피드백된다.
+    출처(기획서기반/AI추가) 컬럼은 "기획서 자체의 빈틈"을 가시화해 다음 기획서 작성 품질로 피드백된다.
+  </div>
+  <div class="design-note" style="border-left-color:#4361ee">
+    <strong>테스트유형 분류 기준</strong>
+    기획서에 명시된 정상 흐름 → Happy Path / 기획서에 명시된 오류 처리 → Unhappy Path / 기획서에 아예 없는 예외(빈 상태·권한·네트워크·경계값·AI 폴백·명세 미정의) → Edge Case(출처는 원칙적으로 AI추가).
+    다만 TC-004·TC-017처럼 명세에 문장으로 존재하는 경계값은 Edge Case이면서도 출처=기획서기반인 예외가 있어, 테스트유형만으로 출처를 100% 예측할 수는 없다.
+  </div>
+  <div class="design-note" style="border-left-color:#2d6a4f">
+    <strong>/validate가 하는 일 (Standard에서 추가한 5단계)</strong>
+    /review가 "품질 기준을 충족했는가"를 본다면 /validate는 "데이터 자체가 정확한가"를 기계적으로 재검산한다 — CSV 컬럼 수·중복·ID 오름차순, 그리고 리포트·decisions.md에 적어둔 수치(82건·P0 15건 등)가 실제 CSV와 일치하는지 대조한다.
   </div>
 </div>
 
 <!-- Coverage matrix -->
 <div class="section">
-  <div class="section-title">📐 섹션별 커버리지 매트릭스</div>
+  <div class="section-title">📐 섹션별 커버리지 매트릭스 (실제 산출물 82건 기준)</div>
   <table>
     <thead><tr><th>기능섹션</th><th class="center">Happy</th><th class="center">Unhappy</th><th class="center">Edge</th><th class="center">P0 포함</th><th class="center">소계</th><th class="center">커버리지</th></tr></thead>
     <tbody>
-      <tr><td>1. 반려동물 프로필 등록</td><td class="center">1</td><td class="center">1</td><td class="center">2</td><td class="center"><span class="badge p-p0">P0</span></td><td class="center">4</td><td class="center cov-full">완비 ✔</td></tr>
-      <tr><td>2. AI 캐릭터 생성</td><td class="center">1</td><td class="center">1</td><td class="center">3</td><td class="center"><span class="badge p-p0">P0</span></td><td class="center">5</td><td class="center cov-full">완비 ✔</td></tr>
-      <tr><td>3. AI 일기 자동생성</td><td class="center">2</td><td class="center">0</td><td class="center">2</td><td class="center">—</td><td class="center">4</td><td class="center cov-warn">Unhappy 보강 ⚠</td></tr>
-      <tr><td>4. 커뮤니티 피드</td><td class="center">1</td><td class="center">1</td><td class="center">1</td><td class="center">—</td><td class="center">3</td><td class="center cov-full">완비 ✔</td></tr>
-      <tr><td>5. 알림</td><td class="center">1</td><td class="center">1</td><td class="center">0</td><td class="center">—</td><td class="center">2</td><td class="center cov-full">완비 ✔</td></tr>
-      <tr><td>6. 계정 및 인증</td><td class="center">1</td><td class="center">0</td><td class="center">1</td><td class="center"><span class="badge p-p0">P0</span></td><td class="center">2</td><td class="center cov-warn">Unhappy 보강 ⚠</td></tr>
-      <tr style="font-weight:700;background:#fafafa"><td>합계</td><td class="center">7</td><td class="center">4</td><td class="center">9</td><td class="center">3섹션</td><td class="center">20</td><td class="center">—</td></tr>
+      <tr><td>1. 반려동물 프로필 등록</td><td class="center">5</td><td class="center">3</td><td class="center">6</td><td class="center"><span class="badge p-p0">P0 (3건)</span></td><td class="center">14</td><td class="center cov-full">완비 ✔</td></tr>
+      <tr><td>2. AI 캐릭터 생성</td><td class="center">4</td><td class="center">3</td><td class="center">7</td><td class="center"><span class="badge p-p0">P0 (4건)</span></td><td class="center">14</td><td class="center cov-full">완비 ✔</td></tr>
+      <tr><td>3. AI 일기 자동생성</td><td class="center">4</td><td class="center">3</td><td class="center">5</td><td class="center">—</td><td class="center">12</td><td class="center cov-full">완비 ✔</td></tr>
+      <tr><td>4. 커뮤니티 피드</td><td class="center">7</td><td class="center">3</td><td class="center">4</td><td class="center">—</td><td class="center">14</td><td class="center cov-full">완비 ✔</td></tr>
+      <tr><td>5. 알림</td><td class="center">5</td><td class="center">2</td><td class="center">4</td><td class="center">—</td><td class="center">11</td><td class="center cov-full">완비 ✔</td></tr>
+      <tr><td>6. 계정 및 인증</td><td class="center">7</td><td class="center">6</td><td class="center">4</td><td class="center"><span class="badge p-p0">P0 (8건)</span></td><td class="center">17</td><td class="center cov-full">완비 ✔</td></tr>
+      <tr style="font-weight:700;background:#fafafa"><td>합계</td><td class="center">32</td><td class="center">20</td><td class="center">30</td><td class="center">15건 (3섹션)</td><td class="center">82</td><td class="center">6/6 섹션</td></tr>
     </tbody>
   </table>
-  <p style="font-size:12px;color:#888;margin-top:10px">⚠ 자동 점검 결과: 섹션 3·6은 Unhappy Path가 없어 보강 권장. /review가 누락 유형을 자동 플래그한다.</p>
+  <p style="font-size:12px;color:#888;margin-top:10px">✔ 6개 섹션 전부 Happy+Unhappy+Edge를 보유. "P0 포함" 열은 섹션 단위 릴리즈 게이트 판단에 사용 — 3개 섹션(프로필 등록·캐릭터 생성·계정 및 인증)은 출시 전 반드시 재검증이 필요하다는 신호를 준다.</p>
+</div>
+
+<!-- Reproducibility test -->
+<div class="section">
+  <div class="section-title">🔁 파이프라인 재현성 실측 (v2/v3 테스트)</div>
+  <p style="font-size:13px;color:#444;margin-bottom:10px">주장만 하지 않고 실제로 새 기획서에 파이프라인을 적용해 검증했습니다.</p>
+  <table>
+    <thead><tr><th>실행</th><th>입력</th><th>결과</th><th>발견 사항</th></tr></thead>
+    <tbody>
+      <tr><td>v2 실행</td><td>product_spec_petbbi_v2_test.md (v1 구조 + [NEW] 요구사항 5건)</td><td>qa-checklist-petbbi-v2-test.csv 87행 생성, 구조 검증 통과</td><td>신규 항목 1건이 Happy Path만 있고 Unhappy Path(중복 생성 방지)가 빠져 있어 보완</td></tr>
+      <tr><td>드리프트 발견</td><td>v1 기준선이 77→82행으로 확장되는 동안 v2(87행)는 분기 시점 스냅샷으로 고정</td><td>diff 기반 재생성은 기준선이 고정될 때만 정확함을 실증</td><td>기준선이 계속 진화하면 수동 리베이스 없이는 두 산출물이 조용히 벌어짐</td></tr>
+      <tr><td>리베이스</td><td>v2-test.csv를 v1 82행 기준으로 병합</td><td>93행으로 갱신, v1→v2 단방향 병합(CLAUDE.md "v1만 사용" 제약 준수)</td><td>리베이스 중 v2 자체 누락 갭 2건(OS 강제종료, 이름 금칙어 필터) 추가 발견</td></tr>
+      <tr><td>v3 실행</td><td>/pipeline 스킬 구현 후 product_spec_petbbi_v3_test.md로 실행</td><td>analyze→insight→generate→review→validate 5단계 통합 실행 검증 완료</td><td>개별 스킬 호출과 동일한 산출물 구조를 한 번의 명령으로 재현</td></tr>
+    </tbody>
+  </table>
+  <div class="drift-box">
+    <strong>한계를 감추지 않고 기록:</strong> 이 실험은 파이프라인의 성공만이 아니라 한계도 함께 드러냈습니다 — 기준선이 계속 확장되는 프로젝트에서는 분기된 브랜치가 자동으로 동기화되지 않으므로, 새 기획서를 넣을 때마다 최신 baseline 기준으로 리베이스가 필요합니다. 상세 근거는 decisions.md의 "파이프라인 재현성 실측", "v1/v2 드리프트 해소" 항목 참조.
+  </div>
 </div>
 
 <!-- Auto report -->
 <div class="section">
-  <div class="section-title">📬 자동 생성 리포트 샘플 — product_spec_petbbi_v1.md</div>
+  <div class="section-title">📬 자동 생성 리포트 — product_spec_petbbi_v1.md (baseline)</div>
   <div class="report-card">
     <div class="report-head">
       <h2>📋 Petbbi QA 체크리스트 자동 생성 결과</h2>
@@ -149,12 +185,12 @@ tbody td.center, thead th.center { text-align: center; }
     </div>
     <div class="report-body">
       <div class="kpi-row">
-        <div class="kpi kpi-purple"><div class="kpi-n" style="color:#6c5ce7">20</div><div class="kpi-l">총 케이스</div></div>
-        <div class="kpi kpi-red"><div class="kpi-n" style="color:#e63946">6</div><div class="kpi-l">P0</div></div>
-        <div class="kpi kpi-orange"><div class="kpi-n" style="color:#e76f51">7</div><div class="kpi-l">AI추가 엣지</div></div>
+        <div class="kpi kpi-purple"><div class="kpi-n" style="color:#6c5ce7">82</div><div class="kpi-l">총 케이스</div></div>
+        <div class="kpi kpi-red"><div class="kpi-n" style="color:#e63946">15</div><div class="kpi-l">P0</div></div>
+        <div class="kpi kpi-orange"><div class="kpi-n" style="color:#e76f51">28</div><div class="kpi-l">AI추가 엣지</div></div>
         <div class="kpi kpi-green"><div class="kpi-n" style="color:#2d6a4f">6/6</div><div class="kpi-l">섹션 커버</div></div>
       </div>
-      <p style="font-size:13px;color:#444">엣지 4유형 커버: 빈 상태 ✔ · 권한 ✔ · 네트워크 ✔ · 경계값 ✔ (+AI 폴백). P0 미해결 0건 시 출시 가능 — Challenge의 릴리즈 게이트로 연결.</p>
+      <p style="font-size:13px;color:#444">엣지 6유형 커버: 빈 상태 ✔(4) · 권한 ✔(3) · 네트워크 ✔(5) · 경계값 ✔(10) · AI 폴백 ✔(1) · 명세 미정의 ✔(5). 명세 미정의 5건은 PM 확정 전까지 "[기획 미정의] 최소 안전 가드레일" 기대결과로 배포. P0 미해결 0건 시 출시 가능 — Challenge의 릴리즈 게이트로 연결.</p>
     </div>
   </div>
 </div>
