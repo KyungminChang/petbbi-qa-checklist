@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petbbi QA 체크리스트 — 홈</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif; background: #f4f5f7; color: #1a1a2e; line-height: 1.6; }
+.container { max-width: 900px; margin: 0 auto; padding: 60px 24px; }
+h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+.sub { font-size: 14px; color: #6c757d; margin-bottom: 36px; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.card { display: block; background: #fff; border-radius: 12px; padding: 28px 24px; text-decoration: none; color: inherit; box-shadow: 0 1px 4px rgba(0,0,0,.06); border-top: 5px solid; transition: transform .15s, box-shadow .15s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,.1); }
+.card.basic { border-color: #6c5ce7; }
+.card.standard { border-color: #e76f51; }
+.card.challenge { border-color: #e63946; }
+.badge { display: inline-block; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; color: #fff; margin-bottom: 14px; }
+.badge.basic { background: #6c5ce7; }
+.badge.standard { background: #e76f51; }
+.badge.challenge { background: #e63946; }
+.card h2 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.card p { font-size: 13px; color: #6c757d; }
+@media (max-width: 720px) { .cards { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Petbbi(펫삐) QA 체크리스트</h1>
+<div class="sub">기획서 기반 QA 체크리스트 자동 생성 — 레벨별 리포트</div>
+
+<div class="cards">
+  <a class="card basic" href="basic.html">
+    <div class="badge basic">🟢 Basic</div>
+    <h2>기본 체크리스트</h2>
+    <p>기능 섹션 6개 Happy/Unhappy 커버 · P0/P1/P2 우선순위 · 엣지케이스 보완</p>
+  </a>
+  <a class="card standard" href="standard.html">
+    <div class="badge standard">🟡 Standard</div>
+    <h2>+ 재현 파이프라인</h2>
+    <p>새 기획서 투입 시 자동 재생성 파이프라인 + 체크리스트 양식 설계</p>
+  </a>
+  <a class="card challenge" href="challenge.html">
+    <div class="badge challenge">🔴 Challenge</div>
+    <h2>+ 릴리즈 게이트</h2>
+    <p>P0 미해결 시 출시 보류 기준 + 테스트 실행 우선순위 플랜</p>
+  </a>
+</div>
+
+</div>
+</body>
+</html>
